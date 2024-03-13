@@ -10,8 +10,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +69,29 @@ public class RequestHandler implements Runnable {
 
                     response200HeaderByType(dos, body.length, "text/html");
                     responseBody(dos, body);
+                }
+            }
+
+            /**
+             * 분기 쿼리 스트링
+             */
+            if (uri.startsWith("/?")) {
+//                HTML과 URL을 비교해 보고 사용자가 입력한 값을 파싱해 model.User 클래스에 저장한다.
+//                /?userId=shim9597&name=%EC%8B%AC%EB%B0%94&password=11&email=shim9597%40gmail.com
+
+                Map<String, String> parameters = new HashMap<>();
+
+                String queryString = uri.replaceAll("/\\?", "");
+                String[] pairs = queryString.split("&");
+                for (String pair : pairs) {
+                    int idx = pair.indexOf("=");
+                    String key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
+                    String value = URLDecoder.decode(pair.substring(idx + 1), "UTF-8");
+                    parameters.put(key, value);
+                }
+
+                for (Entry<String, String> entry : parameters.entrySet()) {
+                    logger.debug("key : {}, value : {}", entry.getKey(), entry.getValue());
                 }
             }
 
