@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,79 +24,125 @@ public class RequestHandler implements Runnable {
 
     private Socket connection;
 
-    public RequestHandler(Socket connectionSocket) {
-        this.connection = connectionSocket;
+    public RequestHandler(Socket connection) {
+        this.connection = connection;
     }
 
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
-        // 출력되는 로그
-//        10:13:27.801 [DEBUG] [Thread-0] [webserver.RequestHandler] - New Client Connect! Connected IP : /0:0:0:0:0:0:0:1, Port : 54450
-//        10:19:45.707 [DEBUG] [Thread-1] [webserver.RequestHandler] - New Client Connect! Connected IP : /0:0:0:0:0:0:0:1, Port : 54491
-        //왜 두개가 뜨는가?
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
 
-            //========================================//
+            HttpRequest httpRequest = createHttpRequest(in);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, "utf-8"));
+            String uri = httpRequest.getUri();
 
-            String line = br.readLine();
-            logger.debug("request line : {}", line);
+            /**
+             * 분기 index.html
+             */
+            if (uri.equals("/index.html")) {
+                String pathname = "./src/main/resources/static/index.html";
+                try (FileInputStream fis = new FileInputStream(new File(pathname))) {
+                    DataOutputStream dos = new DataOutputStream(out);
 
-            String[] tokens = line.split(" ");
+                    byte[] body = fis.readAllBytes();
 
-            String resource = tokens[1];
-
-            System.out.println("resource : " + resource);
-
-            String pathname = "./src/main/resources/static" + resource;
-            try (FileInputStream fis = new FileInputStream(new File(pathname))){
-
-                logger.debug("filepath : {}", pathname);
-                DataOutputStream dos = new DataOutputStream(out);
-
-                byte[] body = fis.readAllBytes();
-
-                if (resource.contains("html")) {
-                    response200HeaderByType(dos, body.length, TEXT_HTML);
+                    response200HeaderByType(dos, body.length, "text/html");
                     responseBody(dos, body);
                 }
-
-                if (resource.contains("css")) {
-                    response200HeaderByType(dos, body.length, TEXT_CSS);
-                    responseBody(dos, body);
-                }
-
-                if (resource.contains("img")) {
-                    response200HeaderByType(dos, body.length, IMAGE_SVG_XML);
-                    responseBody(dos, body);
-                }
-
-                if (resource.contains("ico")) {
-                    response200HeaderByType(dos, body.length, X_ICO);
-                    responseBody(dos, body);
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
             }
 
+            /**
+             * 분기 index.html
+             */
+            if (uri.equals("/registration")) {
+                String pathname = "./src/main/resources/static/registration/index.html";
+                try (FileInputStream fis = new FileInputStream(new File(pathname))) {
+                    DataOutputStream dos = new DataOutputStream(out);
 
+                    byte[] body = fis.readAllBytes();
 
-            while (!line.equals("")) {
-                line = br.readLine();
-                logger.debug("header : {}", line);
+                    response200HeaderByType(dos, body.length, "text/html");
+                    responseBody(dos, body);
+                }
             }
-            //========================================//
 
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
+    //            try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
+//            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+//
+//            //========================================//
+//
+//            BufferedReader br = new BufferedReader(new InputStreamReader(in, "utf-8"));
+//
+//            String line = br.readLine();
+//            logger.debug("request line : {}", line);
+//            String[] tokens = line.split(" ");
+//
+//            String URI = tokens[1]; // HTTP HEAD -> GET 뒤에 붙는 놈
+//
+//            logger.info("requested URI : " + URI);
+//
+//            String pathname = "./src/main/resources/static" + URI;
+//
+//            if (URI.equals("/registration")) {
+//                pathname = "./src/main/resources/static/registration/index.html";
+//            }
+//
+//            // 여기 문자열이 동적으로 바껴야됨 (매핑하는 것)
+//            try (FileInputStream fis = new FileInputStream(new File(pathname))) {
+//
+//                logger.debug("filepath : {}", pathname);
+//                DataOutputStream dos = new DataOutputStream(out);
+//
+//                byte[] body = fis.readAllBytes();
+//
+//                if (URI.contains("registration")) {
+//                    response200HeaderByType(dos, body.length, TEXT_HTML);
+//                    responseBody(dos, body);
+//                }
+//
+//                if (URI.contains("html")) {
+//                    response200HeaderByType(dos, body.length, TEXT_HTML);
+//                    responseBody(dos, body);
+//                }
+//
+//                if (URI.contains("css")) {
+//                    response200HeaderByType(dos, body.length, TEXT_CSS);
+//                    responseBody(dos, body);
+//                }
+//
+//                if (URI.contains("img")) {
+//                    response200HeaderByType(dos, body.length, IMAGE_SVG_XML);
+//                    responseBody(dos, body);
+//                }
+//
+//                if (URI.contains("ico")) {
+//                    response200HeaderByType(dos, body.length, X_ICO);
+//                    responseBody(dos, body);
+//                }
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            while (!line.equals("")) {
+//                line = br.readLine();
+//                logger.debug("header : {}", line);
+//            }
+//            //========================================//
+//
+//        } catch (
+//                IOException e) {
+//            logger.error(e.getMessage());
+//        }
+//    }
+//
     private void response200HeaderByType(DataOutputStream dos, int lengthOfBodyContent, String fileFormat) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
@@ -113,5 +161,26 @@ public class RequestHandler implements Runnable {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private HttpRequest createHttpRequest(InputStream in) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, "utf-8"));
+        String startLine = br.readLine();
+        String header = br.readLine();
+
+        logger.debug("start line : {}", startLine);
+        logger.debug("header : {}", header);
+
+        List<String> body = new ArrayList<>();
+        String line;
+        do {
+            line = br.readLine();
+            body.add(line);
+        } while (!line.equals(""));
+        for (String s : body) {
+            logger.debug("body : {}", s);
+        }
+
+        return new HttpRequest(startLine, header, body);
     }
 }
