@@ -37,6 +37,8 @@ public class RequestHandler implements Runnable {
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
+        // 요청을 보낸 클라이언트의 포트 정보이다. 이걸 우리가 알아야 응답을 어디로 보내 줄지 아는 거다.
+        // 클라이언트가 서버에 연결을 요청할 때 임의의 포트가 부여된다. (51~~~~)
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 
@@ -112,7 +114,7 @@ public class RequestHandler implements Runnable {
     }
 
     //            try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-//            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+//
 //
 //            //========================================//
 //
