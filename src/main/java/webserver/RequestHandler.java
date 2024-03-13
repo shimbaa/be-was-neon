@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,9 +92,18 @@ public class RequestHandler implements Runnable {
                     parameters.put(key, value);
                 }
 
+                //파싱 확인용 코드
                 for (Entry<String, String> entry : parameters.entrySet()) {
                     logger.debug("key : {}, value : {}", entry.getKey(), entry.getValue());
                 }
+
+                User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"),
+                        parameters.get("email"));
+
+                logger.debug("userId : {}", user.getUserId());
+                logger.debug("password : {}", user.getPassword());
+                logger.debug("name : {}", user.getName());
+                logger.debug("email : {}", user.getEmail());
             }
 
         } catch (IOException e) {
