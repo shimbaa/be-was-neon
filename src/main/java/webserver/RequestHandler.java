@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +61,7 @@ public class RequestHandler implements Runnable {
             }
 
             /**
-             * 분기 index.html
+             * 분기 회원가입 클릭시
              */
             if (uri.equals("/registration")) {
                 String pathname = "./src/main/resources/static/registration/index.html";
@@ -77,15 +76,15 @@ public class RequestHandler implements Runnable {
             }
 
             /**
-             * 분기 쿼리 스트링
+             * 분기 쿼리 스트링 (회원가입 폼 처리)
              */
-            if (uri.startsWith("/?")) {
+            if (uri.startsWith("/user/create")) {
 //                HTML과 URL을 비교해 보고 사용자가 입력한 값을 파싱해 model.User 클래스에 저장한다.
 //                /?userId=shim9597&name=%EC%8B%AC%EB%B0%94&password=11&email=shim9597%40gmail.com
 
                 Map<String, String> parameters = new HashMap<>();
 
-                String queryString = uri.replaceAll("/\\?", "");
+                String queryString = uri.replaceAll("/user/create\\?", "");
                 String[] pairs = queryString.split("&");
                 for (String pair : pairs) {
                     int idx = pair.indexOf("=");
@@ -188,7 +187,7 @@ public class RequestHandler implements Runnable {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: " + fileFormat + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n"); // dos 객체에 헤더를 한땀한땀 쓴다
+            dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
