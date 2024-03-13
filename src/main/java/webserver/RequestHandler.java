@@ -101,10 +101,7 @@ public class RequestHandler implements Runnable {
                 User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"),
                         parameters.get("email"));
 
-                logger.debug("userId : {}", user.getUserId());
-                logger.debug("password : {}", user.getPassword());
-                logger.debug("name : {}", user.getName());
-                logger.debug("email : {}", user.getEmail());
+                logger.debug("userInfo : {}", user);
             }
 
         } catch (IOException e) {
