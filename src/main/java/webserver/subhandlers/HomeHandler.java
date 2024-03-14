@@ -1,4 +1,4 @@
-package webserver;
+package webserver.subhandlers;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.HttpRequest;
 
 public class HomeHandler implements WebHandler {
 

@@ -1,4 +1,4 @@
-package webserver;
+package webserver.subhandlers;
 
 import db.Database;
 import java.io.DataOutputStream;
@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.HttpRequest;
 
 public class UserCreateHandler implements WebHandler {
     private static final Logger logger = LoggerFactory.getLogger(UserCreateHandler.class);
