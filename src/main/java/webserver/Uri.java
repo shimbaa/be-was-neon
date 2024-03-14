@@ -8,7 +8,7 @@ public enum Uri {
     INDEX_HTML_HOME("/index.html"),
     USER_CREATE_FORM("/registration"),
     USER_CREATE("/user/create"),
-    DATA_OR_NONE(null);
+    DATA_OR_NONE("TEMPORAL_VALUE");
 
 
     private final String pattern;
