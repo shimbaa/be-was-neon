@@ -2,21 +2,16 @@ package webserver;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +29,8 @@ public class RequestHandler implements Runnable {
         this.connection = connection;
         handlerMap.put(Uri.DEFAULT_HOME, new HomeHandler());
         handlerMap.put(Uri.INDEX_HTML_HOME, new HomeHandler());
-        handlerMap.put(Uri.USER_CREATE, new UserRegisterHandler());
+        handlerMap.put(Uri.USER_CREATE_FORM, new UserRegisterFormHandler());
+        handlerMap.put(Uri.USER_CREATE, new UserCreateHandler());
     }
 
     public void run() {
@@ -49,7 +45,7 @@ public class RequestHandler implements Runnable {
 
             String requestUri = httpRequest.getUri();
 
-            handlerMap.get(Uri.from(requestUri)).process(httpRequest, out);
+            handlerMap.get(Uri.from(requestUri)).process(httpRequest, out); // out 을 HttpResponse 객체로 바꿀 예정
 
 //            /**
 //             * 분기 index.html
@@ -66,50 +62,50 @@ public class RequestHandler implements Runnable {
 //                }
 //            }
 
-            /**
-             *
-             * 분기 회원가입 클릭시
-             */
-            if (requestUri.equals("/registration")) {
-                String pathname = "./src/main/resources/static/registration/index.html";
-                try (FileInputStream fis = new FileInputStream(new File(pathname))) {
-                    DataOutputStream dos = new DataOutputStream(out);
-
-                    byte[] body = fis.readAllBytes();
-
-                    response200HeaderByType(dos, body.length, "text/html");
-                    responseBody(dos, body);
-                }
-            }
+//            /**
+//             *
+//             * 분기 회원가입 클릭시
+//             */
+//            if (requestUri.equals("/registration")) {
+//                String pathname = "./src/main/resources/static/registration/index.html";
+//                try (FileInputStream fis = new FileInputStream(new File(pathname))) {
+//                    DataOutputStream dos = new DataOutputStream(out);
+//
+//                    byte[] body = fis.readAllBytes();
+//
+//                    response200HeaderByType(dos, body.length, "text/html");
+//                    responseBody(dos, body);
+//                }
+//            }
 
             /**
              * 분기 쿼리 스트링 (회원가입 폼 처리)
              */
-            if (requestUri.startsWith("/user/create")) {
+//            if (requestUri.startsWith("/user/create")) {
 //                HTML과 URL을 비교해 보고 사용자가 입력한 값을 파싱해 model.User 클래스에 저장한다.
 //                /?userId=shim9597&name=%EC%8B%AC%EB%B0%94&password=11&email=shim9597%40gmail.com
 
-                Map<String, String> parameters = new HashMap<>();
-
-                String queryString = requestUri.replaceAll("/user/create\\?", "");
-                String[] pairs = queryString.split("&");
-                for (String pair : pairs) {
-                    int idx = pair.indexOf("=");
-                    String key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
-                    String value = URLDecoder.decode(pair.substring(idx + 1), "UTF-8");
-                    parameters.put(key, value);
-                }
-
-                //파싱 확인용 코드
-                for (Entry<String, String> entry : parameters.entrySet()) {
-                    logger.debug("key : {}, value : {}", entry.getKey(), entry.getValue());
-                }
-
-                User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"),
-                        parameters.get("email"));
-
-                logger.debug("userInfo : {}", user);
-            }
+//                Map<String, String> parameters = new HashMap<>();
+//
+//                String queryString = requestUri.replaceAll("/user/create\\?", "");
+//                String[] pairs = queryString.split("&");
+//                for (String pair : pairs) {
+//                    int idx = pair.indexOf("=");
+//                    String key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
+//                    String value = URLDecoder.decode(pair.substring(idx + 1), "UTF-8");
+//                    parameters.put(key, value);
+//                }
+//
+//                //파싱 확인용 코드
+//                for (Entry<String, String> entry : parameters.entrySet()) {
+//                    logger.debug("key : {}, value : {}", entry.getKey(), entry.getValue());
+//                }
+//
+//                User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"),
+//                        parameters.get("email"));
+//
+//                logger.debug("userInfo : {}", user);
+//            }
 
         } catch (IOException e) {
             logger.error(e.getMessage());
