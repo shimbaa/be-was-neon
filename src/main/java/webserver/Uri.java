@@ -6,7 +6,7 @@ public enum Uri {
 
     DEFAULT_HOME("/"),
     INDEX_HTML_HOME("/index.html"),
-    USER_CREATE_FORM("/register"),
+    USER_CREATE_FORM("/registration"),
     USER_CREATE("/user/create"),
     DATA_OR_NONE(null);
 
