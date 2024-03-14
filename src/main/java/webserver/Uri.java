@@ -18,6 +18,10 @@ public enum Uri {
     }
 
     public static Uri from(String requestUri) {
+        if (requestUri.startsWith("/user/create")) {
+            return USER_CREATE;
+        }
+
         return Arrays.stream(values())
                 .filter(uri -> uri.pattern.equals(requestUri))
                 .findAny()
