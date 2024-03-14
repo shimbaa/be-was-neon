@@ -22,15 +22,19 @@ import org.slf4j.LoggerFactory;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private static final String TEXT_HTML = "text/html";
-    private static final String TEXT_CSS = "text/css";
-    private static final String IMAGE_SVG_XML = "image/svg+xml";
-    private static final String X_ICO = "x-ico";
+    //    private static final String TEXT_HTML = "text/html";
+//    private static final String TEXT_CSS = "text/css";
+//    private static final String IMAGE_SVG_XML = "image/svg+xml";
+//    private static final String X_ICO = "x-ico";
 
     private Socket connection;
+    private Map<Uri, WebHandler> handlerMap = new HashMap<>();
 
     public RequestHandler(Socket connection) {
         this.connection = connection;
+        handlerMap.put(Uri.DEFAULT_HOME, new HomeHandler());
+        handlerMap.put(Uri.INDEX_HTML_HOME, new HomeHandler());
+        handlerMap.put(Uri.USER_CREATE, new UserRegisterHandler());
     }
 
     public void run() {
@@ -43,27 +47,30 @@ public class RequestHandler implements Runnable {
 
             HttpRequest httpRequest = createHttpRequest(in);
 
-            String uri = httpRequest.getUri();
+            String requestUri = httpRequest.getUri();
+
+            handlerMap.get(Uri.from(requestUri)).process(httpRequest, out);
+
+//            /**
+//             * 분기 index.html
+//             */
+//            if (requestUri.equals("/index.html") || requestUri.equals("/")) {
+//                String pathname = "./src/main/resources/static/index.html";
+//                try (FileInputStream fis = new FileInputStream(new File(pathname))) {
+//                    DataOutputStream dos = new DataOutputStream(out);
+//
+//                    byte[] body = fis.readAllBytes();
+//
+//                    response200HeaderByType(dos, body.length, "text/html");
+//                    responseBody(dos, body);
+//                }
+//            }
 
             /**
-             * 분기 index.html
-             */
-            if (uri.equals("/index.html")) {
-                String pathname = "./src/main/resources/static/index.html";
-                try (FileInputStream fis = new FileInputStream(new File(pathname))) {
-                    DataOutputStream dos = new DataOutputStream(out);
-
-                    byte[] body = fis.readAllBytes();
-
-                    response200HeaderByType(dos, body.length, "text/html");
-                    responseBody(dos, body);
-                }
-            }
-
-            /**
+             *
              * 분기 회원가입 클릭시
              */
-            if (uri.equals("/registration")) {
+            if (requestUri.equals("/registration")) {
                 String pathname = "./src/main/resources/static/registration/index.html";
                 try (FileInputStream fis = new FileInputStream(new File(pathname))) {
                     DataOutputStream dos = new DataOutputStream(out);
@@ -78,13 +85,13 @@ public class RequestHandler implements Runnable {
             /**
              * 분기 쿼리 스트링 (회원가입 폼 처리)
              */
-            if (uri.startsWith("/user/create")) {
+            if (requestUri.startsWith("/user/create")) {
 //                HTML과 URL을 비교해 보고 사용자가 입력한 값을 파싱해 model.User 클래스에 저장한다.
 //                /?userId=shim9597&name=%EC%8B%AC%EB%B0%94&password=11&email=shim9597%40gmail.com
 
                 Map<String, String> parameters = new HashMap<>();
 
-                String queryString = uri.replaceAll("/user/create\\?", "");
+                String queryString = requestUri.replaceAll("/user/create\\?", "");
                 String[] pairs = queryString.split("&");
                 for (String pair : pairs) {
                     int idx = pair.indexOf("=");
