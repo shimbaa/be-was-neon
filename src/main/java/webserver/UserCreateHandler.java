@@ -1,5 +1,6 @@
 package webserver;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -29,6 +30,13 @@ public class UserCreateHandler implements WebHandler {
                 parameters.get("email"));
 
         logger.debug("userInfo : {}", user);
+
+
+        /**
+         * 응답 로직 : redirect to home
+         */
+        DataOutputStream dos = new DataOutputStream(out);
+        responseRedirection(dos);
     }
 
     private void parseQueryString(HttpRequest httpRequest, Map<String, String> parameters)
@@ -43,4 +51,34 @@ public class UserCreateHandler implements WebHandler {
             parameters.put(key, value);
         }
     }
+
+    private void responseRedirection(DataOutputStream dos) {
+        try {
+            dos.writeBytes("HTTP/1.1 308 Permanent Redirect \r\n");
+            dos.writeBytes("Location: /\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+//    private void response200HeaderByType(DataOutputStream dos, int lengthOfBodyContent) {
+//        try {
+//            dos.writeBytes("HTTP/1.1 200 OK \r\n");
+//            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+//            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+//            dos.writeBytes("\r\n");
+//        } catch (IOException e) {
+//            logger.error(e.getMessage());
+//        }
+//    }
+//
+//    private void responseBody(DataOutputStream dos, byte[] body) {
+//        try {
+//            dos.write(body, 0, body.length);
+//            dos.flush();
+//        } catch (IOException e) {
+//            logger.error(e.getMessage());
+//        }
+//    }
 }
