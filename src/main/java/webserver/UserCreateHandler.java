@@ -1,5 +1,6 @@
 package webserver;
 
+import db.Database;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,6 +32,9 @@ public class UserCreateHandler implements WebHandler {
 
         logger.debug("userInfo : {}", user);
 
+        Database.addUser(user);
+
+        logger.debug("added user in DB : {}", Database.findUserById(user.getUserId()));
 
         /**
          * 응답 로직 : redirect to home
