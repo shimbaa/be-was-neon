@@ -42,7 +42,7 @@ public class RequestHandler implements Runnable {
             HttpRequest httpRequest = HttpRequest.create(in);
             HttpResponse httpResponse = HttpResponse.create(out);
 
-            handlerMap.get(Uri.from(httpRequest)).process(httpRequest, httpResponse); // out 을 HttpResponse 객체로 바꿀 예정
+            handlerMap.get(Uri.from(httpRequest.getUri())).process(httpRequest, httpResponse); // out 을 HttpResponse 객체로 바꿀 예정
 
         } catch (IOException e) {
             logger.error(e.getMessage());

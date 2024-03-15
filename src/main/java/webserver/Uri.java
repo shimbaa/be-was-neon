@@ -16,9 +16,7 @@ public enum Uri {
         this.pattern = pattern;
     }
 
-    public static Uri from(HttpRequest httpRequest) {
-
-        String requestUri = httpRequest.getUri();
+    public static Uri from(String requestUri) {
 
         Optional<DataType> optional = Arrays.stream(DataType.values())
                 .filter(dataType -> requestUri.contains(dataType.label()))
