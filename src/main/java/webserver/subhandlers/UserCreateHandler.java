@@ -1,9 +1,7 @@
 package webserver.subhandlers;
 
 import db.Database;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -13,12 +11,13 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.HttpRequest;
+import webserver.HttpResponse;
 
 public class UserCreateHandler implements WebHandler {
     private static final Logger logger = LoggerFactory.getLogger(UserCreateHandler.class);
 
     @Override
-    public void process(HttpRequest httpRequest, OutputStream out) throws IOException {
+    public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         Map<String, String> parameters = new HashMap<>();
 
         parseQueryString(httpRequest, parameters);
@@ -40,11 +39,7 @@ public class UserCreateHandler implements WebHandler {
         /**
          * 응답 로직 : redirect to home
          */
-        DataOutputStream dos = new DataOutputStream(out);
-//        dos.writeBytes("userId : " + user.getUserId() + "\n" +
-//                "userName : " + user.getName() + "\n" +
-//                "userEmail : " + user.getEmail());
-        responseRedirection(dos);
+        httpResponse.responseRedirection("307", "/");
     }
 
     private void parseQueryString(HttpRequest httpRequest, Map<String, String> parameters)
@@ -59,34 +54,4 @@ public class UserCreateHandler implements WebHandler {
             parameters.put(key, value);
         }
     }
-
-    private void responseRedirection(DataOutputStream dos) {
-        try {
-            dos.writeBytes("HTTP/1.1 307 \r\n");
-            dos.writeBytes("Location: /\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-//    private void response200HeaderByType(DataOutputStream dos, int lengthOfBodyContent) {
-//        try {
-//            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-//            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-//            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-//            dos.writeBytes("\r\n");
-//        } catch (IOException e) {
-//            logger.error(e.getMessage());
-//        }
-//    }
-//
-//    private void responseBody(DataOutputStream dos, byte[] body) {
-//        try {
-//            dos.write(body, 0, body.length);
-//            dos.flush();
-//        } catch (IOException e) {
-//            logger.error(e.getMessage());
-//        }
-//    }
 }

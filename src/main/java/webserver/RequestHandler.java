@@ -42,8 +42,9 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 
             HttpRequest httpRequest = createHttpRequest(in);
+            HttpResponse httpResponse = HttpResponse.create(out);
 
-            handlerMap.get(Uri.from(httpRequest)).process(httpRequest, out); // out 을 HttpResponse 객체로 바꿀 예정
+            handlerMap.get(Uri.from(httpRequest)).process(httpRequest, httpResponse); // out 을 HttpResponse 객체로 바꿀 예정
 
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -51,6 +52,8 @@ public class RequestHandler implements Runnable {
     }
 
     private HttpRequest createHttpRequest(InputStream in) throws IOException {
+        //todo
+        // 코드 정리
         BufferedReader br = new BufferedReader(new InputStreamReader(in, "utf-8"));
         String startLine = br.readLine();
         String header = br.readLine();

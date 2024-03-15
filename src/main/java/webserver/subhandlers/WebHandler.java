@@ -1,10 +1,10 @@
 package webserver.subhandlers;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import webserver.HttpRequest;
+import webserver.HttpResponse;
 
 public interface WebHandler {
 
-    void process(HttpRequest httpRequest, OutputStream out) throws IOException;
+    void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException;
 }
