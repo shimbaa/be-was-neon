@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.DataType;
 import webserver.HttpRequest;
 import webserver.HttpResponse;
 
@@ -18,7 +19,7 @@ public class UserRegisterFormHandler implements WebHandler {
 
             byte[] body = fis.readAllBytes();
 
-            httpResponse.response200HeaderByType(body.length);
+            httpResponse.response200HeaderByType(body.length, DataType.HTML.contentType());
             httpResponse.responseBody(body);
         }
     }

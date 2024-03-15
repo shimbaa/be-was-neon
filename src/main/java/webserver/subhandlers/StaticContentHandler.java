@@ -24,7 +24,7 @@ public class StaticContentHandler implements WebHandler {
             Optional<String> contentType = DataType.getContentTypeFromRequestUri(requestUri);
 
             if (contentType.isPresent()) {
-                httpResponse.response200HeaderByType(body.length);
+                httpResponse.response200HeaderByType(body.length, contentType.get());
                 httpResponse.responseBody(body);
             }
         }

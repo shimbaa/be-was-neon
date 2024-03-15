@@ -26,6 +26,10 @@ public enum DataType {
         return this.label;
     }
 
+    public String contentType() {
+        return this.contentType;
+    }
+
     public static Optional<String> getContentTypeFromRequestUri(String requestUri) {
         return Arrays.stream(values())
                 .filter(dataType -> requestUri.contains(dataType.label))
