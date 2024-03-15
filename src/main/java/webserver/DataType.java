@@ -1,22 +1,35 @@
 package webserver;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum DataType {
     //    html css js ico png jpg
-    HTML("html"),
-    CSS("css"),
-    JS("js"),
-    ICO("ico"),
-    PNG("png"),
-    JPG("jpg"),
-    SVG("svg");
+    HTML("html", "text/html"),
+    CSS("css", "text/css"),
+    JS("js", "text/javascript"),
+    ICO("ico", "x-ico"),
+    PNG("png", "img/png"),
+    JPG("jpg", "img/jpg"),
+    SVG("svg", "img/svg");
 
     private final String label;
 
-    DataType(String label) {
+    private final String contentType;
+
+    DataType(String label, String contentType) {
         this.label = label;
+        this.contentType = contentType;
     }
 
     public String label() {
         return this.label;
+    }
+
+    public static Optional<String> getContentTypeFromRequestUri(String requestUri) {
+        return Arrays.stream(values())
+                .filter(dataType -> requestUri.contains(dataType.label))
+                .findAny()
+                .map(dataType -> dataType.contentType);
     }
 }
