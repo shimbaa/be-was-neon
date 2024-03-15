@@ -41,6 +41,9 @@ public class UserCreateHandler implements WebHandler {
          * 응답 로직 : redirect to home
          */
         DataOutputStream dos = new DataOutputStream(out);
+//        dos.writeBytes("userId : " + user.getUserId() + "\n" +
+//                "userName : " + user.getName() + "\n" +
+//                "userEmail : " + user.getEmail());
         responseRedirection(dos);
     }
 
@@ -59,7 +62,7 @@ public class UserCreateHandler implements WebHandler {
 
     private void responseRedirection(DataOutputStream dos) {
         try {
-            dos.writeBytes("HTTP/1.1 308 Permanent Redirect \r\n");
+            dos.writeBytes("HTTP/1.1 307 \r\n");
             dos.writeBytes("Location: /\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
