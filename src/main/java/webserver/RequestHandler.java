@@ -28,10 +28,9 @@ public class RequestHandler implements Runnable {
     public RequestHandler(Socket connection) {
         this.connection = connection;
         handlerMap.put(Uri.DEFAULT_HOME, new HomeHandler());
-        handlerMap.put(Uri.INDEX_HTML_HOME, new HomeHandler());
         handlerMap.put(Uri.USER_CREATE_FORM, new UserRegisterFormHandler());
         handlerMap.put(Uri.USER_CREATE, new UserCreateHandler());
-        handlerMap.put(Uri.DATA_OR_NONE, new StaticContentHandler());
+        handlerMap.put(Uri.DATA, new StaticContentHandler());
     }
 
     public void run() {
@@ -44,9 +43,8 @@ public class RequestHandler implements Runnable {
 
             HttpRequest httpRequest = createHttpRequest(in);
 
-            String requestUri = httpRequest.getUri();
 
-            handlerMap.get(Uri.from(requestUri)).process(httpRequest, out); // out 을 HttpResponse 객체로 바꿀 예정
+            handlerMap.get(Uri.from(httpRequest)).process(httpRequest, out); // out 을 HttpResponse 객체로 바꿀 예정
 
         } catch (IOException e) {
             logger.error(e.getMessage());
