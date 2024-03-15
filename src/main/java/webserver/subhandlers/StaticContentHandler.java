@@ -5,43 +5,28 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.DataType;
 import webserver.HttpRequest;
 
 public class StaticContentHandler implements WebHandler {
     private static final Logger logger = LoggerFactory.getLogger(StaticContentHandler.class);
-    private static final String TEXT_CSS = "text/css";
-    private static final String IMAGE_SVG_XML = "image/svg+xml";
-    private static final String X_ICO = "x-ico";
 
     @Override
     public void process(HttpRequest httpRequest, OutputStream out) throws IOException {
-
-        String pathname = "./src/main/resources/static" + httpRequest.getUri();
+        String requestUri = httpRequest.getUri();
+        String pathname = "./src/main/resources/static" + requestUri;
         try (FileInputStream fis = new FileInputStream(new File(pathname))) {
             DataOutputStream dos = new DataOutputStream(out);
 
             byte[] body = fis.readAllBytes();
 
-//        html css js ico png jpg
-            if (httpRequest.getUri().contains("css")) {
-                response200HeaderByType(dos, body.length, TEXT_CSS);
-                responseBody(dos, body);
-            }
+            Optional<String> contentType = DataType.getContentTypeFromRequestUri(requestUri);
 
-            if (httpRequest.getUri().contains("img")) {
-                response200HeaderByType(dos, body.length, IMAGE_SVG_XML);
-                responseBody(dos, body);
-            }
-
-            if (httpRequest.getUri().contains("ico")) {
-                response200HeaderByType(dos, body.length, X_ICO);
-                responseBody(dos, body);
-            }
-
-            if (httpRequest.getUri().contains("svg")) {
-                response200HeaderByType(dos, body.length, "svg");
+            if (contentType.isPresent()) {
+                response200HeaderByType(dos, body.length, contentType.get());
                 responseBody(dos, body);
             }
         }
