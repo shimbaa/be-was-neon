@@ -1,8 +1,7 @@
 package webserver;
 
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
 
 public enum Uri {
 
@@ -11,10 +10,7 @@ public enum Uri {
     USER_CREATE("/user/create"),
     DATA("TEMPORAL_VALUE");
 
-
     private final String pattern;
-
-//    private static final String regex = "^[^.]+\\.[^.]+$";
 
     Uri(String pattern) {
         this.pattern = pattern;
@@ -24,20 +20,22 @@ public enum Uri {
 
         String requestUri = httpRequest.getUri();
 
-//        Pattern compile = Pattern.compile(regex);
-//        Matcher matcher = compile.matcher(requestUri);
-//
-//        if (matcher.find()) {
-//            return DATA;
-//        }
+        Optional<DataType> optional = Arrays.stream(DataType.values())
+                .filter(dataType -> requestUri.contains(dataType.label()))
+                .findAny();
 
-        if (requestUri.startsWith("/user/create")) {
+        if (optional.isPresent()) {
+            return DATA;
+        }
+
+        if (requestUri.startsWith(USER_CREATE.pattern)) {
             return USER_CREATE;
         }
 
-        return Arrays.stream(values())
+        Optional<Uri> uriOptional = Arrays.stream(values())
                 .filter(uri -> uri.pattern.equals(requestUri))
-                .findAny()
-                .orElse(DATA);
+                .findAny();
+
+        return uriOptional.orElseThrow(IllegalArgumentException::new);
     }
 }
