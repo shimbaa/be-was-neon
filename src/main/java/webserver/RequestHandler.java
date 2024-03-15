@@ -10,6 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.subhandlers.HomeHandler;
+import webserver.subhandlers.LoginFormHandler;
 import webserver.subhandlers.StaticContentHandler;
 import webserver.subhandlers.UserCreateHandler;
 import webserver.subhandlers.UserRegisterFormHandler;
@@ -26,6 +27,7 @@ public class RequestHandler implements Runnable {
         handlerMap.put(Uri.DEFAULT_HOME, new HomeHandler());
         handlerMap.put(Uri.USER_CREATE_FORM, new UserRegisterFormHandler());
         handlerMap.put(Uri.USER_CREATE, new UserCreateHandler());
+        handlerMap.put(Uri.LOGIN_FORM, new LoginFormHandler());
         handlerMap.put(Uri.DATA, new StaticContentHandler());
     }
 

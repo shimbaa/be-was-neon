@@ -7,6 +7,7 @@ public enum Uri {
     DEFAULT_HOME("/"),
     USER_CREATE_FORM("/registration"),
     USER_CREATE("/user/create"),
+    LOGIN_FORM("/login"),
     DATA("TEMPORAL_VALUE");
 
     private final String pattern;
