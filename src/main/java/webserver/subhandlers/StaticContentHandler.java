@@ -39,6 +39,11 @@ public class StaticContentHandler implements WebHandler {
                 response200HeaderByType(dos, body.length, X_ICO);
                 responseBody(dos, body);
             }
+
+            if (httpRequest.getUri().contains("svg")) {
+                response200HeaderByType(dos, body.length, "svg");
+                responseBody(dos, body);
+            }
         }
     }
 
