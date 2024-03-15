@@ -41,7 +41,7 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 
-            HttpRequest httpRequest = createHttpRequest(in);
+            HttpRequest httpRequest = HttpRequest.create(in);
             HttpResponse httpResponse = HttpResponse.create(out);
 
             handlerMap.get(Uri.from(httpRequest)).process(httpRequest, httpResponse); // out 을 HttpResponse 객체로 바꿀 예정
@@ -51,26 +51,4 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private HttpRequest createHttpRequest(InputStream in) throws IOException {
-        //todo
-        // 코드 정리
-        BufferedReader br = new BufferedReader(new InputStreamReader(in, "utf-8"));
-        String startLine = br.readLine();
-        String header = br.readLine();
-
-        logger.debug("start line : {}", startLine);
-        logger.debug("header : {}", header);
-
-        List<String> body = new ArrayList<>();
-        String line;
-        do {
-            line = br.readLine();
-            body.add(line);
-        } while (!line.equals(""));
-        for (String s : body) {
-            logger.debug("body : {}", s);
-        }
-
-        return new HttpRequest(startLine, header, body);
-    }
 }
