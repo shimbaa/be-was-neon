@@ -3,6 +3,8 @@ package webserver;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +33,8 @@ public class WebServer {
             // 클라이언트가 연결될때까지 대기한다.
             Socket connection;
             while ((connection = listenSocket.accept()) != null) { // connection 에 값이 들어오면 스레드를 생성하고 실행가능 상태로 바꾼다
-                Thread thread = new Thread(new RequestHandler(connection)); // RequestHandler : 클라이언트(웹브라우저)의 요청을 처리한다
-                thread.start();
+                ExecutorService executorService = Executors.newCachedThreadPool();
+                executorService.execute(new RequestHandler(connection));
             }
         }
     }
