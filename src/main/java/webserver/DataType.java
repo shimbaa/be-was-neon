@@ -9,9 +9,9 @@ public enum DataType {
     CSS("css", "text/css"),
     JS("js", "text/javascript"),
     ICO("ico", "x-ico"),
-    PNG("png", "img/png"),
-    JPG("jpg", "img/jpg"),
-    SVG("svg", "img/svg");
+    PNG("png", "image/png"),
+    JPG("jpg", "image/jpg"),
+    SVG("svg", "image/svg+xml");
 
     private final String label;
 
