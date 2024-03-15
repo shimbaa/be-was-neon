@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum Uri {
-
     DEFAULT_HOME("/"),
     USER_CREATE_FORM("/registration"),
     USER_CREATE("/user/create"),
