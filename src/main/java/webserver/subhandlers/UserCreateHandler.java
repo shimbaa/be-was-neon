@@ -39,7 +39,7 @@ public class UserCreateHandler implements WebHandler {
         /**
          * 응답 로직 : redirect to home
          */
-        httpResponse.responseRedirection("307", "/login/index.html");
+        httpResponse.responseRedirection("302", "/login/index.html");
     }
 
     private void parseQueryString(HttpRequest httpRequest, Map<String, String> parameters)

@@ -8,6 +8,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.subhandlers.StaticContentHandler;
+import webserver.subhandlers.UserCreateHandler;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -26,6 +27,9 @@ public class RequestHandler implements Runnable {
             HttpRequest httpRequest = HttpRequest.create(in);
             HttpResponse httpResponse = HttpResponse.create(out);
 
+            if (httpRequest.getUri().startsWith("/user/create")) {
+                new UserCreateHandler().process(httpRequest, httpResponse);
+            }
             new StaticContentHandler().process(httpRequest, httpResponse);
 
         } catch (IOException e) {
