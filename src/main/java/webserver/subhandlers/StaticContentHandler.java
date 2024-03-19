@@ -1,6 +1,5 @@
 package webserver.subhandlers;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Optional;
@@ -13,18 +12,36 @@ import webserver.HttpResponse;
 public class StaticContentHandler implements WebHandler {
     private static final Logger logger = LoggerFactory.getLogger(StaticContentHandler.class);
 
+    private static final String STATIC_RESOURCES_PATH = "./src/main/resources/static";
+
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         String requestUri = httpRequest.getUri();
-        String pathname = "./src/main/resources/static" + requestUri;
-        try (FileInputStream fis = new FileInputStream(new File(pathname))) {
 
-            byte[] body = fis.readAllBytes();
+        Optional<String> contentType = DataType.getContentTypeFromRequestUri(requestUri);
 
-            Optional<String> contentType = DataType.getContentTypeFromRequestUri(requestUri);
+        String pathname = STATIC_RESOURCES_PATH + requestUri;
+        if (contentType.isPresent()) {
+            logger.debug("path name with extender : {}", pathname);
 
-            if (contentType.isPresent()) {
+            try (FileInputStream fis = new FileInputStream(pathname)) {
+
+                byte[] body = fis.readAllBytes();
                 httpResponse.response200HeaderByType(body.length, contentType.get());
+                httpResponse.responseBody(body);
+            }
+        }
+
+        if (contentType.isEmpty()) {
+            if (!pathname.endsWith("/")) {
+                pathname += "/";
+            }
+            pathname += "index.html";
+            logger.debug("path name with NO extender : {}", pathname);
+            try (FileInputStream fis = new FileInputStream(pathname)) {
+
+                byte[] body = fis.readAllBytes();
+                httpResponse.response200HeaderByType(body.length, DataType.HTML.contentType());
                 httpResponse.responseBody(body);
             }
         }
