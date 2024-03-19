@@ -22,10 +22,6 @@ public class WebServer {
 
         // 서버소켓을 생성한다. 웹서버는 기본적으로 8080번 포트를 사용한다.
         try (ServerSocket listenSocket = new ServerSocket(port)) {
-            // 해당 serverSocket 은 대기용이다.
-            // 연결 요청이 들어오면 Socket 을 새로 생성하고, 생성된 해당 소켓이 요청에 대한 연결을 담당하는 것이다.
-            // (참고로 대기 소켓(서버소켓)은 포트가 할당 되지만, 새로 만들어지는 소켓은 포트가 없다. 그래서 100만명씩 치킨이벤트 대응도 되는 거다(?))
-            // 클라이언트 요청은 모두 대기 소켓으로 가지만 os 레벨 에서 어느 연결 소켓으로 보내줘야 하는지 알려주는 거다
             logger.info("Web Application Server started {} port.", port);
             //출력되는 로그
             //10:13:22.914 [INFO ] [main] [webserver.WebServer] - Web Application Server started 8080 port.
