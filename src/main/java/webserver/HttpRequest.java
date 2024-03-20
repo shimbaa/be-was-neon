@@ -66,6 +66,7 @@ public class HttpRequest {
             sb.append(each);
         }
         this.body = sb.toString();
+        logger.debug("POST body : {}", this.body);
     }
 
     private void setPostHeader(BufferedReader br) throws IOException {
