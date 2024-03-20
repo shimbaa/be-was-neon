@@ -3,6 +3,7 @@ package webserver;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ public class HttpResponse {
     private HttpResponse(OutputStream out) {
         this.dos = new DataOutputStream(out);
     }
+
     public static HttpResponse create(OutputStream out) {
         return new HttpResponse(out);
     }
@@ -42,6 +44,18 @@ public class HttpResponse {
         try {
             dos.writeBytes("HTTP/1.1 " + redirectionCode + " \r\n");
             dos.writeBytes("Location: " + location + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    public void responseRedirectionWithCookie(String redirectionCode, String location, UUID uuid) {
+        try {
+            logger.debug("sessionId : {}", uuid);
+            dos.writeBytes("HTTP/1.1 " + redirectionCode + " \r\n");
+            dos.writeBytes("Location: " + location + "\r\n");
+            dos.writeBytes("Set-Cookie: sessionID=" + uuid + ";" + "Path=/");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());

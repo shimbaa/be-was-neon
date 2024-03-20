@@ -7,13 +7,14 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.HttpRequest;
 import webserver.HttpResponse;
 
-public class LoginHandler implements WebHandler{
+public class LoginHandler implements WebHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginHandler.class);
 
@@ -30,7 +31,8 @@ public class LoginHandler implements WebHandler{
         if (findUser.isPresent()) { // 해당 id 회원 존재
             User user = findUser.get();
             if (isPasswordEquals(password, user)) { // 로그인 성공
-                httpResponse.responseRedirection("302", "/");
+                UUID uuid = UUID.randomUUID();
+                httpResponse.responseRedirectionWithCookie("302", "/", uuid);
             }
             if (!isPasswordEquals(password, user)) { //비밀번호 불일치
                 httpResponse.responseRedirection("302", "/login/failed.html");
