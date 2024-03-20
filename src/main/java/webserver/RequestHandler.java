@@ -7,6 +7,7 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.subhandlers.LoginHandler;
 import webserver.subhandlers.StaticContentHandler;
 import webserver.subhandlers.UserCreateHandler;
 
@@ -31,6 +32,9 @@ public class RequestHandler implements Runnable {
 
             if (httpRequest.getRequestUri().startsWith("/user/create")) {
                 new UserCreateHandler().process(httpRequest, httpResponse);
+            }
+            if (httpRequest.getRequestUri().startsWith("/user/login")) {
+                new LoginHandler().process(httpRequest, httpResponse);
             }
             new StaticContentHandler().process(httpRequest, httpResponse);
 
