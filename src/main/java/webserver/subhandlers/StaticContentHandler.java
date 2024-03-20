@@ -16,7 +16,7 @@ public class StaticContentHandler implements WebHandler {
 
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        String requestUri = httpRequest.getUri();
+        String requestUri = httpRequest.getRequestUri();
 
         Optional<String> contentType = DataType.getContentTypeFromRequestUri(requestUri);
 
