@@ -1,10 +1,13 @@
 package webserver;
 
+import db.CookieStorage;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.subhandlers.LoginHandler;
@@ -29,6 +32,19 @@ public class RequestHandler implements Runnable {
             HttpResponse httpResponse = HttpResponse.create(out);
 
             logger.debug("HTTP request : {}", httpRequest);
+
+            // 임시코드
+            String sessionId = httpRequest.getSessionId();
+            if (CookieStorage.findUserBySessionId(sessionId).isPresent()) {
+                User user = CookieStorage.findUserBySessionId(sessionId).get();
+                DataOutputStream dos = new DataOutputStream(out);
+                dos.writeBytes("HTTP/1.1 200 OK \r\n");
+                dos.writeBytes("Content-Type: text/plain;charset=utf-8\r\n");
+                dos.writeBytes("\r\n");
+                dos.writeBytes("user : " + user.getUserId());
+                dos.writeBytes("\r\n");
+                return;
+            }
 
             if (httpRequest.getRequestUri().startsWith("/user/create")) {
                 new UserCreateHandler().process(httpRequest, httpResponse);

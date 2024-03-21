@@ -33,6 +33,20 @@ public class HttpRequest {
         }
     }
 
+    public String getSessionId() {
+        // === 쿠키 관련 작업
+        Optional<String> cookie = header.stream()
+                .filter(line -> line.startsWith("Cookie"))
+                .map(line -> line.replaceAll("Cookie: ", ""))
+                .findAny();
+
+        if (cookie.isPresent()) {
+            String[] split = cookie.get().split("=");
+            return split[1];
+        }
+        return "";
+    }
+
     public String getRequestMethod() {
         String[] tokens = startLine.split(" ");
         return tokens[0];
